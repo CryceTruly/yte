@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import ExpenseCategoryStats, IncomeCategoryStats, ExpenseYearlyStats, IncomeCategoryStats, IncomeYearlyStats
 
-
 urlpatterns = [
     path('expense_category_data', ExpenseCategoryStats.as_view(),
          name="expense_category_data"),

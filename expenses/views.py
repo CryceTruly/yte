@@ -3,7 +3,6 @@ from rest_framework import generics, permissions
 from .serializers import ExpenseSerializer
 from .models import Expense
 from .permissions import IsOwner
-from .pagination import ExpensePaginator
 from .renderers import ExpenseRenderer
 # Create your views here.
 
