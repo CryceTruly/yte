@@ -1,3 +1,3 @@
 release: python manage.py makemigrations --no-input
 release: python manage.py migrate --no-input
-web: guncorn  expensesapi.wsgi
+web: gunicorn  expensesapi.wsgi
