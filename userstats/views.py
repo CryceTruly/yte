@@ -4,12 +4,14 @@ import datetime
 from expenses.models import Expense
 from rest_framework import permissions
 from income.models import Income
+from .renderers import StatsRenderer
 # Create your views here.
 
 
 class ExpenseCategoryStats(views.APIView):
     # categories occuring.
     permission_classes = (permissions.IsAuthenticated,)
+    renderer_classes = (StatsRenderer,)
 
     def get_categories(self, item):
         return item.category
@@ -38,6 +40,7 @@ class ExpenseCategoryStats(views.APIView):
 
 
 class ExpenseYearlyStats(views.APIView):
+    renderer_classes = (StatsRenderer,)
 
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -70,6 +73,7 @@ class ExpenseYearlyStats(views.APIView):
 
 class IncomeCategoryStats(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
+    renderer_classes = (StatsRenderer,)
 
     def get_sources(self, item):
         return item.source
@@ -98,6 +102,7 @@ class IncomeCategoryStats(views.APIView):
 
 class IncomeYearlyStats(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
+    renderer_classes = (StatsRenderer,)
 
     def get_amount_for_month(self, month, all_income, today_year):
         month_amount = 0

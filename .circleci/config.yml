@@ -37,12 +37,11 @@ jobs:
             virtualenv venv
             source venv/bin/activate
             pip install -r requirements.txt
-            python manage.py test && coverage report && coverage html
+            coverage run --source='authentication/,expenses/' manage.py test && coverage report && coverage html
             coveralls
 
 workflows:
   version: 2
-  build_and_lint:
+  build_and_report_cov:
     jobs:
-      - build
       - report-cov
