@@ -20,6 +20,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "min_length": "Password should be at least {min_length} characters"
         }
     )
+
     class Meta:
         model = User
         fields = ['email', 'username', 'password']
@@ -58,6 +59,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class EmailVerifySerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length=256, write_only=True)
+
     class Meta:
         model = User
         fields = ['token']
@@ -97,6 +99,7 @@ class LoginSerializer(serializers.Serializer):
         return {
             'email': user.email,
             'username': user.username,
+            'max_idle_time': user.max_idle_time,
             'tokens': user.token
         }
 
@@ -129,6 +132,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
+
     class Meta:
         fields = ('email', )
 

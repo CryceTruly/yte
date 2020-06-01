@@ -16,32 +16,31 @@ class ExpenseCategoryStats(views.APIView):
     def get_categories(self, item):
         return item.category
 
-    def get_expense_count(self, y):
-        new = Expense.objects.filter(category=y,)
-        count = new.count()
+    def get_expense_amount_for_category(self, expenses, category):
+        filtered_expenses = expenses.filter(category=category)
         amount = 0
-        for y in new:
-            amount += y.amount
-        return {'count': count, 'amount': amount}
+        for expense in filtered_expenses:
+            amount += expense.amount
+        return {'amount': amount}
 
     def get(self, request):
         todays_date = datetime.date.today()
-        three_months_ago = datetime.date.today() - datetime.timedelta(days=90)
+        three_months_ago = todays_date - datetime.timedelta(days=90)
         expenses = Expense.objects.filter(owner=request.user,
                                           date__gte=three_months_ago, date__lte=todays_date)
 
         final = {}
         categories = list(set(map(self.get_categories, expenses)))
 
-        for x in expenses:
-            for y in categories:
-                final[y] = self.get_expense_count(y)
+        for expense in expenses:
+            for category in categories:
+                final[y] = self.get_expense_amount_for_category(
+                    expenses, category)
         return response.Response({'category_data': final}, status=status.HTTP_200_OK)
 
 
 class ExpenseYearlyStats(views.APIView):
     renderer_classes = (StatsRenderer,)
-
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_amount_for_month(self, month, all_expenses, today_year):
@@ -54,7 +53,7 @@ class ExpenseYearlyStats(views.APIView):
 
     def get(self, request):
         todays_date = datetime.date.today()
-        a_year_ago = datetime.date.today() - datetime.timedelta(days=30*12)
+        a_year_ago = todays_date - datetime.timedelta(days=30*12)
 
         all_expenses = Expense.objects.filter(
             owner=request.user, date__gte=a_year_ago, date__lte=todays_date)
@@ -80,11 +79,10 @@ class IncomeCategoryStats(views.APIView):
 
     def get_sources_count(self, y):
         new = Income.objects.filter(source=y)
-        count = new.count()
         amount = 0
         for y in new:
             amount += y.amount
-        return {'count': count, 'amount': amount}
+        return {'amount': amount}
 
     def get(self, request):
         todays_date = datetime.date.today()
@@ -114,14 +112,11 @@ class IncomeYearlyStats(views.APIView):
 
     def get(self, request):
         todays_date = datetime.date.today()
-        a_year_ago = datetime.date.today() - datetime.timedelta(days=30*12)
+        a_year_ago = todays_date - datetime.timedelta(days=30*12)
         all_income = Income.objects.filter(
             owner=request.user, date__gte=a_year_ago, date__lte=todays_date)
         today = datetime.datetime.today().date()
-        today_amount = 0
         months_data = {}
-        week_days_data = {}
-
         for x in range(1, 13):
             today_month, today_year = x, datetime.datetime.today().year
             for one in all_income:
